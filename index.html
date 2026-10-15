@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matematik Şehri – İki Görev, Bir Macera</title>
+  <meta name="description" content="6. Sınıf öğrencileri için ortak katlar ve ortak bölenleri eğlenceli ve etkileşimli şekilde keşfettiren eğitici matematik oyunu.">
+  <style>
+    /* CSS Reset & Core Styling */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+      line-height: 1.5;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Keyframe Animations */
+    @keyframes pulseSoft {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.04); opacity: 0.9; }
+    }
+    @keyframes bounceSoft {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes floatWave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes scaleUp {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes wobble {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-4px) rotate(-2deg); }
+      40% { transform: translateX(4px) rotate(2deg); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+    }
+
+    .animate-pulse-soft { animation: pulseSoft 3s infinite ease-in-out; }
+    .animate-bounce-soft { animation: bounceSoft 2s infinite ease-in-out; }
+    .animate-scale-up { animation: scaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
+    .animate-wobble { animation: wobble 0.5s ease-in-out; }
+
+    /* Button & Form Controls */
+    button {
+      font-family: inherit;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      touch-action: manipulation;
+      transition: all 0.15s ease;
+    }
+    button:active {
+      transform: scale(0.96);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 9999px;
+      background: #e2e8f0;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #0284c7;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    input[type="range"].purple-slider::-webkit-slider-thumb {
+      background: #9333ea;
+    }
+
+    /* Layout Containers */
+    .app-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 2px solid #e0e7ff;
+      padding: 10px 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Badges & Counters */
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 14px;
+      border: 1px solid transparent;
+    }
+    .stat-badge.amber {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #92400e;
+    }
+    .stat-badge.indigo {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      color: #3730a3;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      font-size: 16px;
+    }
+    .icon-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .modal-card {
+      background: #ffffff;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 680px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      margin: auto;
+    }
+
+    /* Canvas for Confetti */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 120;
+    }
+
+    /* Responsive grid utils */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.03); }
+    ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 999px; }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- NAVBAR -->
+    <header class="header-bar">
+      <div class="header-content">
+        <!-- Logo & Title -->
+        <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="GameApp.navigate('city_map')">
+          <div style="width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, #6366f1, #0ea5e9, #f59e0b); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);">
+            🏙️
+          </div>
+          <div>
+            <div style="font-size: 11px; font-weight: 900; letter-spacing: 0.08em; color: #4f46e5; text-transform: uppercase;">
+              MATEMATİK ŞEHRİ
+            </div>
+            <h1 style="font-size: 16px; font-weight: 900; color: #1e293b; line-height: 1.1;">
+              İki Görev, Bir Macera
+            </h1>
+          </div>
+        </div>
+
+        <!-- Middle Button (Back to Map if inside mini-game) -->
+        <div id="nav-location-container" style="display: none;">
+          <button onclick="GameApp.navigate('city_map')" style="padding: 7px 14px; border-radius: 12px; background: linear-gradient(to right, #4f46e5, #4338ca); color: #fff; font-weight: 800; font-size: 13px; box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);">
+            🗺️ Haritaya Dön
+          </button>
+        </div>
+
+        <!-- Stats & Controls -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="stat-badge amber">
+            <span style="font-size: 16px;">⭐</span>
+            <span id="stat-stars">0</span>
+            <span style="font-size: 11px; opacity: 0.8; font-weight: 700;">Yıldız</span>
+          </div>
+
+          <div class="stat-badge indigo">
+            <span style="font-size: 16px;">🏆</span>
+            <span id="stat-score">0</span>
+            <span style="font-size: 11px; opacity: 0.8; font-weight: 700;">Puan</span>
+          </div>
+
+          <!-- Badges Modal Trigger -->
+          <button class="icon-btn" onclick="GameApp.openBadges()" title="Rozetler ve Başarılar" style="position: relative;">
+            🎖️
+            <span id="badges-count-pill" style="display: none; position: absolute; top: -3px; right: -3px; background: #f59e0b; color: #fff; font-size: 9px; font-weight: 900; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">0</span>
+          </button>
+
+          <!-- Guide / Sandbox Modal Trigger -->
+          <button onclick="GameApp.openGuide()" style="padding: 6px 12px; border-radius: 12px; background: #e0e7ff; color: #3730a3; font-weight: 800; font-size: 13px;">
+            📖 <span style="margin-left: 2px;">Rehber</span>
+          </button>
+
+          <!-- Sound Mute/Unmute -->
+          <button id="sound-btn" class="icon-btn" onclick="GameApp.toggleSound()" title="Sesi Aç/Kapat" style="background: #dcfce7; color: #166534;">
+            🔊
+          </button>
+
+          <!-- Fullscreen -->
+          <button class="icon-btn" onclick="GameApp.toggleFullscreen()" title="Tam Ekran (Akıllı Tahta)">
+            ⛶
+          </button>
+
+          <!-- Reset -->
+          <button class="icon-btn" onclick="GameApp.resetProgress()" title="İlerlemeyi Sıfırla" style="color: #94a3b8;">
+            ↺
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main id="main-view" class="main-content"></main>
+  </div>
+
+  <!-- MODAL CONTAINERS -->
+  <div id="modal-container"></div>
+
+  <script>
+    /**
+     * MATEMATİK ŞEHRİ – STANDALONE JAVASCRIPT GAME ENGINE
+     * 100% Offline, Single-File, Zero External Dependencies
+     */
+
+    // --- 1. PROCEDURAL WEB AUDIO SYNTHESIZER ---
+    const SoundEngine = {
+      ctx: null,
+      enabled: true,
+
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContextClass();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      },
+
+      playClick() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.05);
+          gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.05);
+        } catch(e) {}
+      },
+
+      playPop() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(260, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.08);
+        } catch(e) {}
+      },
+
+      playFerryHorn() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const duration = 0.85;
+          const master = this.ctx.createGain();
+          master.gain.setValueAtTime(0, now);
+          master.gain.linearRampToValueAtTime(0.22, now + 0.08);
+          master.gain.exponentialRampToValueAtTime(0.001, now + duration);
+          master.connect(this.ctx.destination);
+
+          const o1 = this.ctx.createOscillator();
+          o1.type = 'sawtooth';
+          o1.frequency.setValueAtTime(155, now);
+          o1.frequency.linearRampToValueAtTime(153, now + duration);
+
+          const o2 = this.ctx.createOscillator();
+          o2.type = 'sawtooth';
+          o2.frequency.setValueAtTime(232, now);
+          o2.frequency.linearRampToValueAtTime(230, now + duration);
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(650, now);
+
+          o1.connect(filter);
+          o2.connect(filter);
+          filter.connect(master);
+
+          o1.start(now); o2.start(now);
+          o1.stop(now + duration); o2.stop(now + duration);
+        } catch(e) {}
+      },
+
+      playSuccess() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const notes = [523.25, 659.25, 783.99, 1046.5];
+          const now = this.ctx.currentTime;
+          notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+            const st = now + idx * 0.07;
+            gain.gain.setValueAtTime(0, st);
+            gain.gain.linearRampToValueAtTime(0.15, st + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, st + 0.35);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(st);
+            osc.stop(st + 0.35);
+          });
+        } catch(e) {}
+      },
+
+      playOops() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.linearRampToValueAtTime(240, now + 0.18);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        } catch(e) {}
+      },
+
+      playVictory() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const melody = [
+            { f: 440, d: 0.12 },
+            { f: 554.37, d: 0.12 },
+            { f: 659.25, d: 0.14 },
+            { f: 880, d: 0.45 },
+          ];
+          let cur = this.ctx.currentTime;
+          melody.forEach(s => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(s.f, cur);
+            gain.gain.setValueAtTime(0.22, cur);
+            gain.gain.exponentialRampToValueAtTime(0.001, cur + s.d);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(cur);
+            osc.stop(cur + s.d);
+            cur += s.d * 0.85;
+          });
+        } catch(e) {}
+      }
+    };
+
+    // --- 2. SELF-CONTAINED CANVAS CONFETTI ---
+    const Confetti = {
+      canvas: null,
+      ctx: null,
+      particles: [],
+      animId: null,
+
+      init() {
+        this.canvas = document.getElementById('confetti-canvas');
+        if (this.canvas) {
+          this.ctx = this.canvas.getContext('2d');
+          this.resize();
+          window.addEventListener('resize', () => this.resize());
+        }
+      },
+
+      resize() {
+        if (!this.canvas) return;
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      },
+
+      fire(count = 70) {
+        this.init();
+        if (!this.canvas || !this.ctx) return;
+        const colors = ['#6366f1', '#0ea5e9', '#f59e0b', '#10b981', '#ec4899', '#8b5cf6'];
+        const originX = this.canvas.width / 2;
+        const originY = this.canvas.height * 0.6;
+
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.random() * Math.PI) - (Math.PI / 2);
+          const speed = 7 + Math.random() * 12;
+          this.particles.push({
+            x: originX,
+            y: originY,
+            vx: Math.cos(angle) * speed + (Math.random() - 0.5) * 4,
+            vy: -Math.abs(Math.sin(angle) * speed) - 5,
+            size: 6 + Math.random() * 8,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            rotationSpeed: (Math.random() - 0.5) * 12,
+            opacity: 1,
+            gravity: 0.35 + Math.random() * 0.15,
+            drag: 0.98,
+          });
+        }
+
+        if (!this.animId) {
+          this.loop();
+        }
+      },
+
+      loop() {
+        if (!this.ctx || !this.canvas) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.vx *= p.drag;
+          p.rotation += p.rotationSpeed;
+          p.opacity -= 0.012;
+
+          if (p.opacity <= 0 || p.y > this.canvas.height + 20) {
+            this.particles.splice(i, 1);
+            continue;
+          }
+
+          this.ctx.save();
+          this.ctx.translate(p.x, p.y);
+          this.ctx.rotate((p.rotation * Math.PI) / 180);
+          this.ctx.fillStyle = p.color;
+          this.ctx.globalAlpha = Math.max(0, p.opacity);
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          this.ctx.restore();
+        }
+
+        if (this.particles.length > 0) {
+          this.animId = requestAnimationFrame(() => this.loop());
+        } else {
+          this.animId = null;
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+      }
+    };
+
+    // --- 3. MATHEMATICAL HELPERS (NO EBOB/EKOK TERMINOLOGY IN STUDENT UI) ---
+    const MathUtils = {
+      getGCD(a, b) {
+        return b === 0 ? a : this.getGCD(b, a % b);
+      },
+      getLCM(a, b) {
+        if (a === 0 || b === 0) return 0;
+        return Math.abs(a * b) / this.getGCD(a, b);
+      },
+      getDivisors(n) {
+        const divs = [];
+        for (let i = 1; i <= n; i++) {
+          if (n % i === 0) divs.push(i);
+        }
+        return divs;
+      },
+      getCommonDivisors(a, b) {
+        const divA = this.getDivisors(a);
+        return divA.filter(d => b % d === 0);
+      },
+      getMultiplesUpTo(n, maxVal) {
+        const res = [];
+        for (let m = n; m <= maxVal; m += n) res.push(m);
+        return res;
+      },
+      getCommonMultiplesUpTo(a, b, maxVal) {
+        const lcm = this.getLCM(a, b);
+        const res = [];
+        for (let m = lcm; m <= maxVal; m += lcm) res.push(m);
+        return res;
+      }
+    };
+
+    // --- 4. DATA CATALOGS ---
+    const BADGES = [
+      { id: 'first_voyage', title: 'İlk Sefer Kaptanı', description: 'Vapur İskelesinde ilk ortak sefer saatini doğru keşfet.', icon: '🧭', category: 'vapur' },
+      { id: 'master_navigator', title: 'Kutup Yıldızı Kaptanı', description: 'Zaman çizelgesindeki tüm çakışan sefer saatlerini eksiksiz bul.', icon: '⚓', category: 'vapur' },
+      { id: 'first_fair', title: 'Festival Çırağı', description: 'Festival alanında ilk kalansız ortak böleni keşfet.', icon: '🎪', category: 'festival' },
+      { id: 'master_packer', title: 'Adil Paylaşım Ustası', description: 'Festivaldeki iki ürünün tüm ortak bölenlerini hiç artırmadan bul.', icon: '🎁', category: 'festival' },
+      { id: 'city_architect', title: 'Matematik Şehri Mimarı', description: 'Toplam 10 görevi başarıyla tamamla.', icon: '🏛️', category: 'special' },
+      { id: 'star_collector', title: 'Gökkuşağı Yıldızı', description: 'Toplam 15 yıldıza ulaş.', icon: '🌟', category: 'special' },
+    ];
+
+    const FERRY_PAIRS = [
+      { a: 4, b: 6, max: 48, routeA: 'Kadıköy ➔ Beşiktaş', routeB: 'Üsküdar ➔ Eminönü', nameA: 'Mavi Martı', nameB: 'Kırmızı Pelikan' },
+      { a: 3, b: 4, max: 48, routeA: 'Bostancı ➔ Adalar', routeB: 'Kabataş ➔ Kadıköy', nameA: 'Turkuaz Ada', nameB: 'Kırmızı Yelken' },
+      { a: 6, b: 8, max: 72, routeA: 'Sarıyer ➔ Beykoz', routeB: 'Karaköy ➔ Üsküdar', nameA: 'Boğaz Rüzgarı', nameB: 'Altın Boynuz' },
+      { a: 4, b: 5, max: 60, routeA: 'Eminönü ➔ Üsküdar', routeB: 'Beşiktaş ➔ Kadıköy', nameA: 'Mavi Marmara', nameB: 'Turuncu Lale' },
+      { a: 5, b: 6, max: 60, routeA: 'Bakırköy ➔ Yenikapı', routeB: 'Maltepe ➔ Büyükada', nameA: 'Körfez Yıldızı', nameB: 'Kızıl Şafak' },
+      { a: 6, b: 9, max: 54, routeA: 'Üsküdar ➔ Beşiktaş', routeB: 'Kadıköy ➔ Karaköy', nameA: 'Gümüş Yunus', nameB: 'Mercan Gemisi' },
+      { a: 8, b: 12, max: 72, routeA: 'Adalar ➔ Bostancı', routeB: 'Eminönü ➔ Sarıyer', nameA: 'Poyraz', nameB: 'Lodos' },
+      { a: 3, b: 5, max: 45, routeA: 'Moda ➔ Kabataş', routeB: 'Kuzguncuk ➔ Ortaköy', nameA: 'Mavi Dalga', nameB: 'Yakut Şimşek' },
+    ];
+
+    const FESTIVAL_PAIRS = [
+      { a: 12, b: 18, pluralA: 'Mavi Balon', iconA: '🎈', pluralB: 'Kırmızı Elma Şekeri', iconB: '🍭' },
+      { a: 16, b: 24, pluralA: 'Mor Şenlik Bayrağı', iconA: '🚩', pluralB: 'Sarı Festival Şapkası', iconB: '🎩' },
+      { a: 20, b: 30, pluralA: 'Zümrüt Rozet', iconA: '⭐', pluralB: 'Turuncu Şenlik Düdüğü', iconB: '🎺' },
+      { a: 18, b: 27, pluralA: 'Yıldız Çıkartma', iconA: '✨', pluralB: 'Pembe Şenlik Kurdelesi', iconB: '🎀' },
+      { a: 24, b: 36, pluralA: 'Altın Festival Feneri', iconA: '🏮', pluralB: 'Mavi Müzik Kutusu', iconB: '🎁' },
+      { a: 15, b: 25, pluralA: 'Sarı Güneş Gözlüğü', iconA: '🕶️', pluralB: 'Kırmızı Meyve Suyu', iconB: '🧃' },
+      { a: 24, b: 32, pluralA: 'Yeşil Tırtıl Balon', iconA: '🎈', pluralB: 'Kakaolu Bisküvi', iconB: '🍫' },
+      { a: 12, b: 16, pluralA: 'Kırmızı Palyaço Burnu', iconA: '🔴', pluralB: 'Işıltılı Konfeti Paketi', iconB: '🎉' },
+    ];
+
+    // --- 5. APPLICATION STATE & CONTROLLER ---
+    const GameApp = {
+      currentLocation: 'city_map',
+      progress: {
+        totalStars: 0,
+        totalScore: 0,
+        vapurCompletedCount: 0,
+        festivalCompletedCount: 0,
+        unlockedBadges: [],
+        soundEnabled: true,
+      },
+
+      // Mini-game 1: Vapur State
+      vapur: {
+        level: 1,
+        data: null,
+        currentTime: 0,
+        isPlaying: false,
+        playSpeed: 1,
+        timerId: null,
+        foundMultiples: [],
+        hintVisible: false,
+        feedback: null,
+        stage: 'find_first',
+      },
+
+      // Mini-game 2: Festival State
+      festival: {
+        level: 1,
+        data: null,
+        currentDivisor: 2,
+        discoveredDivisors: [],
+        hintVisible: false,
+        feedback: null,
+        stage: 'exploring',
+      },
+
+      init() {
+        this.loadProgress();
+        this.updateHeaderStats();
+        this.navigate('city_map');
+      },
+
+      loadProgress() {
+        try {
+          const raw = localStorage.getItem('matematik_sehri_standalone_v1');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            this.progress = { ...this.progress, ...parsed };
+            SoundEngine.enabled = this.progress.soundEnabled ?? true;
+          }
+        } catch(e) {}
+      },
+
+      saveProgress() {
+        try {
+          localStorage.setItem('matematik_sehri_standalone_v1', JSON.stringify(this.progress));
+        } catch(e) {}
+        this.updateHeaderStats();
+      },
+
+      updateHeaderStats() {
+        document.getElementById('stat-stars').textContent = this.progress.totalStars;
+        document.getElementById('stat-score').textContent = this.progress.totalScore;
+        const pill = document.getElementById('badges-count-pill');
+        if (this.progress.unlockedBadges.length > 0) {
+          pill.style.display = 'flex';
+          pill.textContent = this.progress.unlockedBadges.length;
+        } else {
+          pill.style.display = 'none';
+        }
+        const sndBtn = document.getElementById('sound-btn');
+        if (SoundEngine.enabled) {
+          sndBtn.textContent = '🔊';
+          sndBtn.style.background = '#dcfce7';
+          sndBtn.style.color = '#166534';
+        } else {
+          sndBtn.textContent = '🔇';
+          sndBtn.style.background = '#ffe4e6';
+          sndBtn.style.color = '#9f1239';
+        }
+      },
+
+      toggleSound() {
+        SoundEngine.enabled = !SoundEngine.enabled;
+        this.progress.soundEnabled = SoundEngine.enabled;
+        this.saveProgress();
+        if (SoundEngine.enabled) SoundEngine.playClick();
+      },
+
+      toggleFullscreen() {
+        SoundEngine.playClick();
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      },
+
+      resetProgress() {
+        SoundEngine.playClick();
+        if (confirm('Tüm ilerlemeyi ve yıldızları sıfırlayıp baştan başlamak istiyor musun?')) {
+          this.progress = {
+            totalStars: 0,
+            totalScore: 0,
+            vapurCompletedCount: 0,
+            festivalCompletedCount: 0,
+            unlockedBadges: [],
+            soundEnabled: true,
+          };
+          SoundEngine.enabled = true;
+          this.saveProgress();
+          this.navigate('city_map');
+          SoundEngine.playPop();
+        }
+      },
+
+      navigate(loc) {
+        this.currentLocation = loc;
+        const navLoc = document.getElementById('nav-location-container');
+        if (loc === 'city_map') {
+          navLoc.style.display = 'none';
+          this.stopVapurTimer();
+          this.renderCityMap();
+        } else if (loc === 'vapur_iskelesi') {
+          navLoc.style.display = 'block';
+          this.initVapurGame();
+        } else if (loc === 'festival_alani') {
+          navLoc.style.display = 'block';
+          this.stopVapurTimer();
+          this.initFestivalGame();
+        }
+      },
+
+      // --- CITY MAP RENDERING ---
+      renderCityMap() {
+        const root = document.getElementById('main-view');
+        root.innerHTML = `
+          <div style="position: relative; flex: 1; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; background: linear-gradient(to bottom, #7dd3fc, #bae6fd, #e0f2fe, #f0fdf4); padding: 24px 16px;">
+            <!-- Ambient Sky Layer -->
+            <div style="position: absolute; inset: 0; pointer-events: none; overflow: hidden;">
+              <div style="position: absolute; top: 16px; left: 32px; width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(to right, #fde047, #f59e0b); box-shadow: 0 0 50px rgba(245, 158, 11, 0.6);" class="animate-pulse-soft"></div>
+              <div style="position: absolute; top: 32px; left: 20%; width: 130px; height: 44px; background: rgba(255,255,255,0.8); border-radius: 999px;"></div>
+              <div style="position: absolute; top: 50px; right: 22%; width: 180px; height: 50px; background: rgba(255,255,255,0.7); border-radius: 999px;"></div>
+              <div style="position: absolute; top: 40px; left: 35%; font-size: 16px; color: rgba(30, 41, 59, 0.5); font-weight: 900;" class="animate-bounce-soft">〜 v 〜</div>
+            </div>
+
+            <!-- Welcome Header -->
+            <div style="position: relative; z-index: 10; max-width: 900px; margin: 0 auto; text-align: center;">
+              <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 999px; background: rgba(255,255,255,0.9); border: 2px solid #c7d2fe; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px;">
+                <span style="font-size: 14px;">✨</span>
+                <span style="font-size: 12px; font-weight: 900; color: #4338ca; letter-spacing: 0.05em;">MEB 6. SINIF MATEMATİK SERÜVENİ (MAT.6.1.4)</span>
+              </div>
+              <h2 style="font-size: clamp(26px, 5vw, 44px); font-weight: 900; color: #0f172a; line-height: 1.15; margin-bottom: 6px;">
+                Matematik Şehri'ne Hoş Geldin!
+              </h2>
+              <p style="font-size: 15px; color: #334155; font-weight: 700; max-width: 650px; margin: 0 auto;">
+                Şehrimizde iki büyük matematik görevi seni bekliyor. Katları ve bölenleri ezberlemeden, etkileşimli deneylerle keşfet ve şehrin yıldızlarını topla!
+              </p>
+
+              <!-- Stats Pill Bar -->
+              <div style="margin-top: 14px; display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px; background: rgba(255,255,255,0.85); backdrop-filter: blur(4px); padding: 8px 20px; border-radius: 20px; border: 1px solid #bae6fd;">
+                <div style="font-size: 13px; font-weight: 800; color: #334155;">
+                  ⭐ Toplam Yıldız: <strong style="color: #d97706; font-size: 16px;">${this.progress.totalStars}</strong>
+                </div>
+                <span style="color: #cbd5e1;">|</span>
+                <div style="font-size: 13px; font-weight: 800; color: #334155;">
+                  🚢 İskele Görevleri: <strong style="color: #0284c7; font-size: 16px;">${this.progress.vapurCompletedCount}</strong>
+                </div>
+                <span style="color: #cbd5e1;">|</span>
+                <div style="font-size: 13px; font-weight: 800; color: #334155;">
+                  🎪 Festival Görevleri: <strong style="color: #9333ea; font-size: 16px;">${this.progress.festivalCompletedCount}</strong>
+                </div>
+                <span style="color: #cbd5e1;">|</span>
+                <div onclick="GameApp.openBadges()" style="font-size: 13px; font-weight: 800; color: #b45309; cursor: pointer; text-decoration: underline;">
+                  🎖️ ${this.progress.unlockedBadges.length}/${BADGES.length} Rozet
+                </div>
+              </div>
+            </div>
+
+            <!-- Locations Cards Grid -->
+            <div style="position: relative; z-index: 10; max-width: 1060px; margin: 24px auto; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+              <!-- CARD 1: VAPUR İSKELESİ -->
+              <div onclick="SoundEngine.playFerryHorn(); GameApp.navigate('vapur_iskelesi');" style="background: rgba(255,255,255,0.95); border-radius: 28px; padding: 24px; border: 4px solid #7dd3fc; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15); cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="padding: 4px 12px; border-radius: 999px; background: #e0f2fe; color: #0369a1; font-size: 12px; font-weight: 900; border: 1px solid #bae6fd;">
+                      ⚓ 1. GÖREV: ORTAK KATLAR
+                    </span>
+                    <span style="font-size: 12px; font-weight: 900; color: #b45309; background: #fffbeb; padding: 2px 8px; border-radius: 999px; border: 1px solid #fef3c7;">
+                      ⭐ ${this.progress.vapurCompletedCount * 3}
+                    </span>
+                  </div>
+
+                  <h3 style="font-size: 26px; font-weight: 900; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                    <span>Vapur İskelesi</span>
+                    <span style="font-size: 28px;">🚢</span>
+                  </h3>
+                  <p style="font-size: 12px; font-weight: 900; color: #0284c7; text-transform: uppercase; margin-top: 2px; letter-spacing: 0.05em;">
+                    "Seferler Çakışıyor!"
+                  </p>
+
+                  <!-- Preview Box -->
+                  <div style="margin: 16px 0; padding: 14px; border-radius: 18px; background: linear-gradient(to bottom, #e0f2fe, #bae6fd); border: 2px solid #7dd3fc;">
+                    <div style="display: flex; justify-content: space-between; font-size: 26px; margin-bottom: 6px;">
+                      <span class="animate-bounce-soft">🌊</span>
+                      <span>⛴️</span>
+                      <span class="animate-bounce-soft">🌊</span>
+                      <span>🚢</span>
+                      <span class="animate-bounce-soft">🌊</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.95); padding: 8px 12px; border-radius: 12px; font-size: 12px; font-weight: 800; color: #334155; text-align: center;">
+                      🎯 Çakışma Anı: Vapurlar aynı anda ne zaman iskelede buluşur?
+                    </div>
+                  </div>
+
+                  <p style="font-size: 14px; color: #475569; font-weight: 700; line-height: 1.45;">
+                    İki farklı vapur belirli zaman aralıklarıyla iskeleden kalkıyor. Canlı zaman çubuğunu ilerlet, vapurları simüle et ve aynı anda kalktıkları dakikaları keşfet!
+                  </p>
+                </div>
+
+                <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 12px; font-weight: 800; color: #64748b;">
+                    ✓ ${this.progress.vapurCompletedCount} Sefer Tamamlandı
+                  </span>
+                  <button style="padding: 10px 18px; border-radius: 14px; background: linear-gradient(to right, #0284c7, #2563eb); color: #fff; font-weight: 900; font-size: 14px; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);">
+                    İkeleye Git ➔
+                  </button>
+                </div>
+              </div>
+
+              <!-- CARD 2: FESTİVAL ALANI -->
+              <div onclick="SoundEngine.playPop(); GameApp.navigate('festival_alani');" style="background: rgba(255,255,255,0.95); border-radius: 28px; padding: 24px; border: 4px solid #d8b4fe; box-shadow: 0 10px 25px rgba(147, 51, 234, 0.15); cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="padding: 4px 12px; border-radius: 999px; background: #f3e8ff; color: #7e22ce; font-size: 12px; font-weight: 900; border: 1px solid #e9d5ff;">
+                      🎪 2. GÖREV: ORTAK BÖLENLER
+                    </span>
+                    <span style="font-size: 12px; font-weight: 900; color: #b45309; background: #fffbeb; padding: 2px 8px; border-radius: 999px; border: 1px solid #fef3c7;">
+                      ⭐ ${this.progress.festivalCompletedCount * 3}
+                    </span>
+                  </div>
+
+                  <h3 style="font-size: 26px; font-weight: 900; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                    <span>Festival Alanı</span>
+                    <span style="font-size: 28px;">🎪</span>
+                  </h3>
+                  <p style="font-size: 12px; font-weight: 900; color: #9333ea; text-transform: uppercase; margin-top: 2px; letter-spacing: 0.05em;">
+                    "Eşit Paylaşım Şöleni!"
+                  </p>
+
+                  <!-- Preview Box -->
+                  <div style="margin: 16px 0; padding: 14px; border-radius: 18px; background: linear-gradient(to bottom, #f3e8ff, #fce7f3); border: 2px solid #d8b4fe;">
+                    <div style="display: flex; justify-content: space-between; font-size: 26px; margin-bottom: 6px;">
+                      <span class="animate-bounce-soft">🎈</span>
+                      <span>🎁</span>
+                      <span class="animate-bounce-soft">🍭</span>
+                      <span>🎪</span>
+                      <span class="animate-bounce-soft">✨</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.95); padding: 8px 12px; border-radius: 12px; font-size: 12px; font-weight: 800; color: #334155; text-align: center;">
+                      🎁 Kalansız Paylaşım: İki ürünü de hiç artırmadan paketle!
+                    </div>
+                  </div>
+
+                  <p style="font-size: 14px; color: #475569; font-weight: 700; line-height: 1.45;">
+                    Festival stantları için hazırlanan balon ve şekerleri hiç artmayacak (kalansız) biçimde eşit paketle. Paketleme makinesini yönet, ortak bölenleri kutula!
+                  </p>
+                </div>
+
+                <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 12px; font-weight: 800; color: #64748b;">
+                    ✓ ${this.progress.festivalCompletedCount} Paketleme Tamamlandı
+                  </span>
+                  <button style="padding: 10px 18px; border-radius: 14px; background: linear-gradient(to right, #9333ea, #4f46e5); color: #fff; font-weight: 900; font-size: 14px; box-shadow: 0 4px 10px rgba(147, 51, 234, 0.3);">
+                    Festivale Katıl ➔
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Guide Banner -->
+            <div style="position: relative; z-index: 10; max-width: 900px; margin: 10px auto 0; width: 100%;">
+              <div style="background: rgba(255,255,255,0.95); border-radius: 20px; padding: 14px 20px; border: 2px solid #c7d2fe; box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 44px; height: 44px; border-radius: 14px; background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                    💡
+                  </div>
+                  <div>
+                    <h4 style="font-weight: 900; font-size: 15px; color: #1e293b;">Matematik Şehri Keşif Rehberi</h4>
+                    <p style="font-size: 12px; font-weight: 700; color: #64748b;">Ortak katların ve ortak bölenlerin mantığını görsel deney tahtasında serbestçe dene!</p>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button onclick="GameApp.openGuide()" style="padding: 8px 16px; border-radius: 12px; background: #e0e7ff; color: #3730a3; font-weight: 900; font-size: 13px;">
+                    📖 Rehberi Aç
+                  </button>
+                  <button onclick="GameApp.openBadges()" style="padding: 8px 16px; border-radius: 12px; background: #fef3c7; color: #92400e; font-weight: 900; font-size: 13px;">
+                    🎖️ Rozetlerim
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      // --- MINI-GAME 1: VAPUR İSKELESİ (ORTAK KATLAR) ---
+      initVapurGame() {
+        this.generateVapurScenario();
+        this.renderVapurGame();
+      },
+
+      generateVapurScenario() {
+        const pool = FERRY_PAIRS;
+        const sel = pool[Math.floor(Math.random() * pool.length)];
+        const lcm = MathUtils.getLCM(sel.a, sel.b);
+        const allCommons = MathUtils.getCommonMultiplesUpTo(sel.a, sel.b, sel.max);
+
+        this.vapur.data = {
+          nameA: sel.nameA,
+          intervalA: sel.a,
+          routeA: sel.routeA,
+          nameB: sel.nameB,
+          intervalB: sel.b,
+          routeB: sel.routeB,
+          maxTime: sel.max,
+          firstCommon: lcm,
+          allCommons: allCommons,
+          story: `${sel.nameA} her ${sel.a} dakikada bir, ${sel.nameB} ise her ${sel.b} dakikada bir iskeleden hareket ediyor. İkisi de 0. dakikada birlikte kalktı. Bakalım bir sonraki sefere ne zaman aynı anda kalkacaklar?`
+        };
+
+        this.vapur.currentTime = 0;
+        this.vapur.isPlaying = false;
+        this.vapur.foundMultiples = [];
+        this.vapur.stage = 'find_first';
+        this.vapur.hintVisible = false;
+        this.vapur.feedback = {
+          type: 'info',
+          msg: `Yeni sefer hattı açıldı! ${sel.nameA} (${sel.a} dk) ve ${sel.nameB} (${sel.b} dk). Zamanı ilerlet ve ilk çakışma anını keşfet!`
+        };
+        this.stopVapurTimer();
+      },
+
+      renderVapurGame() {
+        const d = this.vapur.data;
+        const root = document.getElementById('main-view');
+        const curTime = this.vapur.currentTime;
+        const isAAtDock = curTime > 0 && curTime % d.intervalA === 0;
+        const isBAtDock = curTime > 0 && curTime % d.intervalB === 0;
+        const isBothAtDock = isAAtDock && isBAtDock;
+
+        const multiplesA = MathUtils.getMultiplesUpTo(d.intervalA, d.maxTime);
+        const multiplesB = MathUtils.getMultiplesUpTo(d.intervalB, d.maxTime);
+
+        root.innerHTML = `
+          <div style="max-width: 1100px; margin: 0 auto; width: 100%; padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+            <!-- Mission Header -->
+            <div style="background: #ffffff; border-radius: 24px; padding: 20px; border: 3px solid #7dd3fc; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 52px; height: 52px; border-radius: 18px; background: #0284c7; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);">
+                  🚢
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="padding: 2px 10px; border-radius: 999px; background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 900; text-transform: uppercase;">
+                      GÖREV 1: ORTAK KATLAR
+                    </span>
+                    <span style="font-size: 12px; font-weight: 700; color: #94a3b8;">
+                      Seviye ${this.vapur.level}
+                    </span>
+                  </div>
+                  <h2 style="font-size: 22px; font-weight: 900; color: #0f172a; margin-top: 2px;">
+                    Vapur İskelesi – Seferler Çakışıyor!
+                  </h2>
+                  <p style="font-size: 13px; font-weight: 700; color: #475569; max-width: 680px;">
+                    ${d.story}
+                  </p>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button onclick="GameApp.toggleVapurHint()" style="padding: 8px 14px; border-radius: 12px; background: #fffbeb; color: #92400e; border: 1px solid #fde68a; font-weight: 800; font-size: 13px;">
+                  💡 ${this.vapur.hintVisible ? 'İpucunu Gizle' : 'İpucu Al'}
+                </button>
+                <button onclick="GameApp.nextVapurLevel()" style="padding: 8px 16px; border-radius: 12px; background: #4f46e5; color: #fff; font-weight: 900; font-size: 13px; box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);">
+                  Yeni Sefer ➔
+                </button>
+              </div>
+            </div>
+
+            <!-- Educational Hint Box -->
+            ${this.vapur.hintVisible ? `
+              <div class="animate-fade-in" style="background: #fffbeb; border: 2px solid #fde68a; border-radius: 18px; padding: 14px 18px; font-size: 13px; color: #78350f; font-weight: 700; display: flex; gap: 12px; align-items: flex-start;">
+                <span style="font-size: 24px;">💡</span>
+                <div>
+                  <strong style="color: #451a03; display: block; margin-bottom: 2px;">Kaptan İpucu:</strong>
+                  Bir vapur her <strong>${d.intervalA}</strong> dakikada (${d.intervalA}, ${d.intervalA*2}, ${d.intervalA*3}...), diğeri her <strong>${d.intervalB}</strong> dakikada (${d.intervalB}, ${d.intervalB*2}, ${d.intervalB*3}...) kalkıyor. İki sayının ortak katlarında her iki vapur aynı anda iskelede buluşur. Zaman çizelgesindeki işaretlerin aynı hizaya geldiği dakikayı ara!
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- DOCK VISUAL & SIMULATION -->
+            <div style="background: linear-gradient(to bottom, #38bdf8, #0ea5e9, #0284c7); border-radius: 28px; padding: 20px; border: 4px solid #0369a1; box-shadow: 0 12px 30px rgba(2, 132, 199, 0.25); color: #fff; position: relative; overflow: hidden;">
+              <!-- Dock Clock Header -->
+              <div style="background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); padding: 10px 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.25); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 26px;">⏰</span>
+                  <div>
+                    <span style="font-size: 11px; text-transform: uppercase; color: #bae6fd; font-weight: 800; display: block;">İSKELE SAATİ</span>
+                    <div style="font-size: 24px; font-weight: 900; font-family: monospace; line-height: 1;">
+                      08:${curTime.toString().padStart(2, '0')} <span style="font-size: 13px; font-family: inherit; color: #e0f2fe; font-weight: 800;">(${curTime}. Dakika)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Docking Status -->
+                <div>
+                  ${isBothAtDock ? `
+                    <div class="animate-bounce-soft" style="padding: 6px 16px; border-radius: 999px; background: #10b981; color: #fff; font-weight: 900; font-size: 13px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);">
+                      ✨ ÇAKIŞMA ANI! İki vapur da iskelede!
+                    </div>
+                  ` : isAAtDock ? `
+                    <div style="padding: 4px 12px; border-radius: 999px; background: rgba(3, 105, 161, 0.8); color: #e0f2fe; font-weight: 800; font-size: 12px;">
+                      Sadece ${d.nameA} iskelede
+                    </div>
+                  ` : isBAtDock ? `
+                    <div style="padding: 4px 12px; border-radius: 999px; background: rgba(225, 29, 72, 0.8); color: #ffe4e6; font-weight: 800; font-size: 12px;">
+                      Sadece ${d.nameB} iskelede
+                    </div>
+                  ` : `
+                    <div style="padding: 4px 12px; border-radius: 999px; background: rgba(15, 23, 42, 0.4); color: #cbd5e1; font-weight: 700; font-size: 12px;">
+                      Vapurlar seferde...
+                    </div>
+                  `}
+                </div>
+              </div>
+
+              <!-- Berths Grid -->
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+                <!-- Berth A -->
+                <div style="padding: 16px; border-radius: 20px; border: 3px solid ${isAAtDock ? '#fde047' : 'rgba(255,255,255,0.25)'}; background: ${isAAtDock ? 'rgba(7, 89, 133, 0.75)' : 'rgba(12, 74, 110, 0.4)'}; transition: all 0.2s;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <span style="font-size: 11px; text-transform: uppercase; color: #7dd3fc; font-weight: 800;">İSKELE 1</span>
+                      <h4 style="font-size: 18px; font-weight: 900; color: #fff;">${d.nameA}</h4>
+                      <p style="font-size: 12px; color: #bae6fd; font-weight: 700;">Her ${d.intervalA} dakikada bir</p>
+                      <p style="font-size: 11px; color: #e0f2fe; opacity: 0.8;">${d.routeA}</p>
+                    </div>
+                    <div style="font-size: 38px; transform: ${isAAtDock ? 'scale(1.2)' : 'scale(1)'}; transition: transform 0.2s;" class="${isAAtDock ? 'animate-bounce-soft' : ''}">
+                      🚢
+                    </div>
+                  </div>
+                  <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: space-between; font-size: 11px; font-weight: 800;">
+                    <span style="color: #bae6fd;">Sonraki Sefer: ${Math.ceil(curTime / d.intervalA) * d.intervalA} dk</span>
+                    <span style="padding: 2px 8px; border-radius: 6px; background: ${isAAtDock ? '#facc15' : 'rgba(0,0,0,0.3)'}; color: ${isAAtDock ? '#0f172a' : '#fff'};">
+                      ${isAAtDock ? '⚓ İSKELEDE' : '🌊 YOLDA'}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Berth B -->
+                <div style="padding: 16px; border-radius: 20px; border: 3px solid ${isBAtDock ? '#fde047' : 'rgba(255,255,255,0.25)'}; background: ${isBAtDock ? 'rgba(159, 18, 57, 0.75)' : 'rgba(136, 19, 55, 0.4)'}; transition: all 0.2s;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <span style="font-size: 11px; text-transform: uppercase; color: #fbcfe8; font-weight: 800;">İSKELE 2</span>
+                      <h4 style="font-size: 18px; font-weight: 900; color: #fff;">${d.nameB}</h4>
+                      <p style="font-size: 12px; color: #fbcfe8; font-weight: 700;">Her ${d.intervalB} dakikada bir</p>
+                      <p style="font-size: 11px; color: #ffe4e6; opacity: 0.8;">${d.routeB}</p>
+                    </div>
+                    <div style="font-size: 38px; transform: ${isBAtDock ? 'scale(1.2)' : 'scale(1)'}; transition: transform 0.2s;" class="${isBAtDock ? 'animate-bounce-soft' : ''}">
+                      ⛴️
+                    </div>
+                  </div>
+                  <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: space-between; font-size: 11px; font-weight: 800;">
+                    <span style="color: #fbcfe8;">Sonraki Sefer: ${Math.ceil(curTime / d.intervalB) * d.intervalB} dk</span>
+                    <span style="padding: 2px 8px; border-radius: 6px; background: ${isBAtDock ? '#facc15' : 'rgba(0,0,0,0.3)'}; color: ${isBAtDock ? '#0f172a' : '#fff'};">
+                      ${isBAtDock ? '⚓ İSKELEDE' : '🌊 YOLDA'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- INTERACTIVE CONTROLS BAR -->
+            <div style="background: #ffffff; border-radius: 24px; padding: 18px; border: 2px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 14px;">
+              <!-- Slider & Steppers -->
+              <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+                <div style="flex: 1; min-width: 240px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: #64748b; margin-bottom: 4px;">
+                    <span>0. dk (Başlangıç)</span>
+                    <span style="color: #0284c7; font-weight: 900; font-size: 13px;">${curTime}. Dakika</span>
+                    <span>${d.maxTime}. dk</span>
+                  </div>
+                  <input type="range" min="0" max="${d.maxTime}" value="${curTime}" oninput="GameApp.setVapurTime(parseInt(this.value))">
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <button onclick="GameApp.stepVapurTime(-1)" style="padding: 6px 12px; border-radius: 10px; background: #f1f5f9; color: #334155; font-weight: 800; font-size: 12px;">-1 dk</button>
+                  <button onclick="GameApp.stepVapurTime(1)" style="padding: 6px 12px; border-radius: 10px; background: #e0f2fe; color: #0369a1; font-weight: 900; font-size: 12px;">+1 dk</button>
+                  <button onclick="GameApp.stepVapurTime(5)" style="padding: 6px 12px; border-radius: 10px; background: #e0f2fe; color: #0369a1; font-weight: 900; font-size: 12px;">+5 dk</button>
+                  <button onclick="GameApp.setVapurTime(0)" style="padding: 6px 10px; border-radius: 10px; background: #f1f5f9; color: #64748b; font-weight: 800; font-size: 12px;" title="Sıfırla">↺</button>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <button onclick="GameApp.toggleVapurSimulation()" style="padding: 8px 16px; border-radius: 12px; background: ${this.vapur.isPlaying ? '#e11d48' : '#059669'}; color: #fff; font-weight: 900; font-size: 13px;">
+                    ${this.vapur.isPlaying ? '⏸ Durdur' : '▶ Simülasyonu Oynat'}
+                  </button>
+                  <button onclick="GameApp.toggleVapurSpeed()" style="padding: 8px 12px; border-radius: 12px; background: #f1f5f9; color: #334155; font-weight: 800; font-size: 12px;">
+                    ${this.vapur.playSpeed}x Hız
+                  </button>
+                </div>
+              </div>
+
+              <!-- Primary Ring Bell Action -->
+              <div style="background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 18px; padding: 14px 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+                <div>
+                  <span style="font-size: 11px; text-transform: uppercase; font-weight: 900; color: #166534; display: block;">GÖZLEM VE TESPİT</span>
+                  <p style="font-size: 13px; font-weight: 700; color: #1e293b;">
+                    Şu an <strong>${curTime}. dakikadasın</strong>. İki vapurun da iskelede olduğunu düşünüyorsan zili çal!
+                  </p>
+                </div>
+
+                <button onclick="GameApp.ringVapurBell()" style="padding: 12px 24px; border-radius: 16px; font-weight: 900; font-size: 15px; color: #fff; background: ${isBothAtDock ? 'linear-gradient(to right, #f59e0b, #d97706)' : 'linear-gradient(to right, #0284c7, #2563eb)'}; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" class="${isBothAtDock ? 'animate-pulse-soft' : ''}">
+                  🔔 Çakışmayı Mühürle / İskele Zili Çal!
+                </button>
+              </div>
+            </div>
+
+            <!-- INTERACTIVE DUAL TIMELINE / NUMBER LINE -->
+            <div style="background: #ffffff; border-radius: 24px; padding: 20px; border: 2px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
+                <div>
+                  <h3 style="font-size: 16px; font-weight: 900; color: #0f172a; display: flex; align-items: gap: 6px;">
+                    <span>Zaman Çizelgesi & Sefer Katları Doğrusu</span>
+                    <span style="font-size: 11px; padding: 2px 8px; border-radius: 6px; background: #e0e7ff; color: #3730a3; font-weight: 800;">Etkileşimli</span>
+                  </h3>
+                  <p style="font-size: 12px; font-weight: 700; color: #64748b;">
+                    Dakika butonlarına tıklayarak zamanı doğrudan ayarlayabilirsin. İki rengin üst üste geldiği yerler ortak katlardır!
+                  </p>
+                </div>
+
+                <!-- Found Pills -->
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                  <span style="font-size: 12px; font-weight: 800; color: #64748b;">Bulunan Çakışmalar:</span>
+                  ${this.vapur.foundMultiples.length === 0 ? `
+                    <span style="font-size: 12px; color: #94a3b8; font-style: italic;">Henüz bulunmadı</span>
+                  ` : this.vapur.foundMultiples.map(m => `
+                    <span style="padding: 2px 8px; border-radius: 6px; background: #dcfce7; color: #166534; border: 1px solid #86efac; font-weight: 900; font-size: 12px;">
+                      ✓ ${m}. dk
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Visual Tracks -->
+              <div style="overflow-x: auto; padding: 10px 0;">
+                <div style="min-width: 700px; display: flex; flex-direction: column; gap: 12px;">
+                  <!-- Ferry A Line -->
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 120px; text-align: right; shrink-0;">
+                      <span style="font-size: 12px; font-weight: 900; color: #0284c7; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${d.nameA}</span>
+                      <span style="font-size: 10px; font-weight: 700; color: #94a3b8;">${d.intervalA}'in katları</span>
+                    </div>
+                    <div style="flex: 1; height: 38px; background: #f0f9ff; border-radius: 12px; border: 1px solid #bae6fd; position: relative;">
+                      ${multiplesA.map(val => {
+                        const pct = (val / d.maxTime) * 100;
+                        const isFound = this.vapur.foundMultiples.includes(val);
+                        const isCur = curTime === val;
+                        return `
+                          <button onclick="GameApp.setVapurTime(${val})" style="position: absolute; left: calc(${pct}% - 14px); top: 50%; transform: translateY(-50%) ${isCur ? 'scale(1.2)' : 'scale(1)'}; width: 28px; height: 28px; border-radius: 8px; font-size: 11px; font-weight: 900; z-index: ${isCur ? 10 : 2}; background: ${isFound ? '#10b981' : isCur ? '#0284c7' : '#bae6fd'}; color: ${isFound || isCur ? '#fff' : '#0369a1'}; border: ${isCur ? '2px solid #0f172a' : 'none'}; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                            ${val}
+                          </button>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+
+                  <!-- Ferry B Line -->
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 120px; text-align: right; shrink-0;">
+                      <span style="font-size: 12px; font-weight: 900; color: #e11d48; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${d.nameB}</span>
+                      <span style="font-size: 10px; font-weight: 700; color: #94a3b8;">${d.intervalB}'nin katları</span>
+                    </div>
+                    <div style="flex: 1; height: 38px; background: #fff1f2; border-radius: 12px; border: 1px solid #fecdd3; position: relative;">
+                      ${multiplesB.map(val => {
+                        const pct = (val / d.maxTime) * 100;
+                        const isFound = this.vapur.foundMultiples.includes(val);
+                        const isCur = curTime === val;
+                        return `
+                          <button onclick="GameApp.setVapurTime(${val})" style="position: absolute; left: calc(${pct}% - 14px); top: 50%; transform: translateY(-50%) ${isCur ? 'scale(1.2)' : 'scale(1)'}; width: 28px; height: 28px; border-radius: 8px; font-size: 11px; font-weight: 900; z-index: ${isCur ? 10 : 2}; background: ${isFound ? '#10b981' : isCur ? '#e11d48' : '#fecdd3'}; color: ${isFound || isCur ? '#fff' : '#9f1239'}; border: ${isCur ? '2px solid #0f172a' : 'none'}; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                            ${val}
+                          </button>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+
+                  <!-- Common Multiples Alignment Line -->
+                  <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px;">
+                    <div style="width: 120px; text-align: right; shrink-0;">
+                      <span style="font-size: 12px; font-weight: 900; color: #b45309; display: block;">🎯 Ortak Katlar</span>
+                      <span style="font-size: 10px; font-weight: 700; color: #94a3b8;">Çakışma Anları</span>
+                    </div>
+                    <div style="flex: 1; height: 36px; background: #fffbeb; border-radius: 12px; border: 1px dashed #fcd34d; position: relative;">
+                      ${d.allCommons.map(val => {
+                        const pct = (val / d.maxTime) * 100;
+                        const isFound = this.vapur.foundMultiples.includes(val);
+                        return `
+                          <button onclick="GameApp.setVapurTime(${val})" style="position: absolute; left: calc(${pct}% - 24px); top: 50%; transform: translateY(-50%); padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 900; background: ${isFound ? '#10b981' : '#f59e0b'}; color: ${isFound ? '#fff' : '#0f172a'}; border: 1px solid rgba(0,0,0,0.15); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            ${isFound ? `✓ ${val} dk` : `? ${val} dk`}
+                          </button>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FEEDBACK CARD -->
+            ${this.vapur.feedback ? `
+              <div class="animate-fade-in" style="border-radius: 20px; padding: 18px 20px; font-weight: 700; font-size: 14px; border: 2px solid ${
+                this.vapur.feedback.type === 'success' ? '#86efac' : this.vapur.feedback.type === 'error' ? '#fca5a5' : '#7dd3fc'
+              }; background: ${
+                this.vapur.feedback.type === 'success' ? '#f0fdf4' : this.vapur.feedback.type === 'error' ? '#fff1f2' : '#f0f9ff'
+              }; color: ${
+                this.vapur.feedback.type === 'success' ? '#14532d' : this.vapur.feedback.type === 'error' ? '#881337' : '#0c4a6e'
+              }; display: flex; gap: 12px; align-items: flex-start;">
+                <span style="font-size: 24px;">${this.vapur.feedback.type === 'success' ? '🎉' : this.vapur.feedback.type === 'error' ? '⚓' : '🧭'}</span>
+                <div style="flex: 1;">
+                  <p style="line-height: 1.5;">${this.vapur.feedback.msg}</p>
+
+                  ${this.vapur.stage === 'completed' ? `
+                    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #bbf7d0; font-size: 13px; color: #166534;">
+                      <strong style="display: block; margin-bottom: 4px;">🔍 Matematiksel Keşif (Kaptan Defteri):</strong>
+                      İlk ortak kat: <strong>${d.firstCommon}</strong>. <br>
+                      Sonraki tüm ortak katlar bu ilk ortak katın katlarıdır: <strong>${d.firstCommon} × 1 = ${d.firstCommon}, ${d.firstCommon} × 2 = ${d.firstCommon * 2}, ${d.firstCommon} × 3 = ${d.firstCommon * 3}...</strong>
+                      <div style="margin-top: 12px; display: flex; gap: 8px;">
+                        <button onclick="GameApp.nextVapurLevel()" style="padding: 8px 16px; border-radius: 12px; background: #059669; color: #fff; font-weight: 900; font-size: 13px;">
+                          Yeni Göreve Geç ➔
+                        </button>
+                        <button onclick="GameApp.navigate('city_map')" style="padding: 8px 16px; border-radius: 12px; background: #ffffff; color: #334155; border: 1px solid #cbd5e1; font-weight: 800; font-size: 13px;">
+                          Şehir Haritasına Dön
+                        </button>
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      },
+
+      setVapurTime(t) {
+        SoundEngine.playClick();
+        this.vapur.currentTime = Math.max(0, Math.min(this.vapur.data.maxTime, t));
+        this.renderVapurGame();
+      },
+
+      stepVapurTime(delta) {
+        SoundEngine.playClick();
+        this.setVapurTime(this.vapur.currentTime + delta);
+      },
+
+      toggleVapurSimulation() {
+        SoundEngine.playClick();
+        if (this.vapur.isPlaying) {
+          this.stopVapurTimer();
+        } else {
+          this.vapur.isPlaying = true;
+          this.startVapurTimer();
+        }
+        this.renderVapurGame();
+      },
+
+      startVapurTimer() {
+        this.stopVapurTimer();
+        const interval = this.vapur.playSpeed === 1 ? 500 : 250;
+        this.vapur.timerId = setInterval(() => {
+          if (this.vapur.currentTime >= this.vapur.data.maxTime) {
+            this.stopVapurTimer();
+            this.renderVapurGame();
+            return;
+          }
+          this.vapur.currentTime += 1;
+          this.renderVapurGame();
+        }, interval);
+      },
+
+      stopVapurTimer() {
+        if (this.vapur.timerId) {
+          clearInterval(this.vapur.timerId);
+          this.vapur.timerId = null;
+        }
+        this.vapur.isPlaying = false;
+      },
+
+      toggleVapurSpeed() {
+        SoundEngine.playClick();
+        this.vapur.playSpeed = this.vapur.playSpeed === 1 ? 2 : 1;
+        if (this.vapur.isPlaying) {
+          this.startVapurTimer();
+        }
+        this.renderVapurGame();
+      },
+
+      toggleVapurHint() {
+        SoundEngine.playClick();
+        this.vapur.hintVisible = !this.vapur.hintVisible;
+        this.renderVapurGame();
+      },
+
+      nextVapurLevel() {
+        SoundEngine.playClick();
+        this.vapur.level += 1;
+        this.generateVapurScenario();
+        this.renderVapurGame();
+      },
+
+      ringVapurBell() {
+        const cur = this.vapur.currentTime;
+        const d = this.vapur.data;
+
+        if (cur === 0) {
+          SoundEngine.playOops();
+          this.vapur.feedback = {
+            type: 'error',
+            msg: "0. dakika başlangıç anıdır. Lütfen 0'dan sonraki ilk ortak kalkış dakikasını bul!"
+          };
+          this.renderVapurGame();
+          return;
+        }
+
+        const isA = cur % d.intervalA === 0;
+        const isB = cur % d.intervalB === 0;
+
+        if (isA && isB) {
+          SoundEngine.playSuccess();
+          if (!this.vapur.foundMultiples.includes(cur)) {
+            this.vapur.foundMultiples.push(cur);
+            this.vapur.foundMultiples.sort((x, y) => x - y);
+            Confetti.fire(50);
+
+            if (this.vapur.stage === 'find_first') {
+              if (cur === d.firstCommon) {
+                this.vapur.stage = 'find_all';
+                this.vapur.feedback = {
+                  type: 'success',
+                  msg: `MÜKEMMEL! İki vapur da ilk kez ${cur}. dakikada aynı anda iskelede buluştu! Bu sayı her iki sefer aralığının da bir ortak katıdır! Şimdi zaman çizelgesindeki DİĞER ortak katları da keşfet!`
+                };
+              } else {
+                this.vapur.feedback = {
+                  type: 'info',
+                  msg: `Evet, ${cur}. dakikada ikisi de iskelede! Fakat bundan daha önce bir ortak çakışma anı daha var. İlk buluşma anını arayalım!`
+                };
+              }
+            } else {
+              if (this.vapur.foundMultiples.length >= d.allCommons.length) {
+                this.vapur.stage = 'completed';
+                SoundEngine.playVictory();
+                Confetti.fire(120);
+                this.awardReward(3, 150, 'master_navigator', 'Vapur İskelesi');
+                this.vapur.feedback = {
+                  type: 'success',
+                  msg: `Tebrikler Kaptan! ${d.maxTime} dakikalık zaman aralığındaki TÜM çakışan saatleri (${d.allCommons.join(', ')}) eksiksiz buldun!`
+                };
+              } else {
+                const rem = d.allCommons.length - this.vapur.foundMultiples.length;
+                this.vapur.feedback = {
+                  type: 'success',
+                  msg: `Harika! ${cur}. dakikayı da mühürledin! Bulunacak ${rem} ortak sefer saati daha var. İncelemeye devam et!`
+                };
+              }
+            }
+          } else {
+            SoundEngine.playPop();
+            this.vapur.feedback = {
+              type: 'info',
+              msg: `${cur}. dakikayı zaten daha önce bulmuştun! Başka çakışan seferler ara!`
+            };
+          }
+        } else {
+          SoundEngine.playOops();
+          let reason = '';
+          if (isA && !isB) {
+            reason = `Sadece ${d.nameA} iskelede! ${d.nameB} henüz gelmedi (${cur}, ${d.intervalB}'nin bir katı değil).`;
+          } else if (!isA && isB) {
+            reason = `Sadece ${d.nameB} iskelede! ${d.nameA} henüz gelmedi (${cur}, ${d.intervalA}'nin bir katı değil).`;
+          } else {
+            reason = `Şu an iskelede hiçbir vapur yok! Her iki vapurun da iskeleye yanaştığı ortak bir kat bulmalısın.`;
+          }
+          this.vapur.feedback = { type: 'error', msg: reason };
+        }
+
+        this.renderVapurGame();
+      },
+
+      // --- MINI-GAME 2: FESTİVAL ALANI (ORTAK BÖLENLER) ---
+      initFestivalGame() {
+        this.generateFestivalScenario();
+        this.renderFestivalGame();
+      },
+
+      generateFestivalScenario() {
+        const pool = FESTIVAL_PAIRS;
+        const sel = pool[Math.floor(Math.random() * pool.length)];
+        const commonDivs = MathUtils.getCommonDivisors(sel.a, sel.b);
+        const maxDiv = Math.max(...commonDivs);
+
+        this.festival.data = {
+          totalA: sel.a,
+          pluralA: sel.pluralA,
+          iconA: sel.iconA,
+          totalB: sel.b,
+          pluralB: sel.pluralB,
+          iconB: sel.iconB,
+          commonDivs: commonDivs,
+          maxDiv: maxDiv,
+          story: `Festival hazırlık komitesi ${sel.a} adet ${sel.pluralA} ve ${sel.b} adet ${sel.pluralB} hazırladı. Bu hediyeleri hiç artmayacak şekilde eşit paketlere koyup stantlara dağıtacağız!`
+        };
+
+        this.festival.currentDivisor = 2;
+        this.festival.discoveredDivisors = [];
+        this.festival.hintVisible = false;
+        this.festival.stage = 'exploring';
+        this.festival.feedback = {
+          type: 'info',
+          msg: `Yeni festival stantları açıldı! ${sel.a} adet ${sel.pluralA} ve ${sel.b} adet ${sel.pluralB}. Paket büyüklüğünü ayarla ve kalansız bölen sayıları keşfet!`
+        };
+      },
+
+      renderFestivalGame() {
+        const d = this.festival.data;
+        const curDiv = this.festival.currentDivisor;
+        const maxPossible = Math.min(d.totalA, d.totalB);
+
+        const qA = Math.floor(d.totalA / curDiv);
+        const remA = d.totalA % curDiv;
+        const isDivA = remA === 0;
+
+        const qB = Math.floor(d.totalB / curDiv);
+        const remB = d.totalB % curDiv;
+        const isDivB = remB === 0;
+        const isCommon = isDivA && isDivB;
+
+        const root = document.getElementById('main-view');
+        root.innerHTML = `
+          <div style="max-width: 1100px; margin: 0 auto; width: 100%; padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+            <!-- Mission Header -->
+            <div style="background: #ffffff; border-radius: 24px; padding: 20px; border: 3px solid #d8b4fe; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 52px; height: 52px; border-radius: 18px; background: #9333ea; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 10px rgba(147, 51, 234, 0.3);">
+                  🎪
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="padding: 2px 10px; border-radius: 999px; background: #f3e8ff; color: #7e22ce; font-size: 11px; font-weight: 900; text-transform: uppercase;">
+                      GÖREV 2: ORTAK BÖLENLER
+                    </span>
+                    <span style="font-size: 12px; font-weight: 700; color: #94a3b8;">
+                      Seviye ${this.festival.level}
+                    </span>
+                  </div>
+                  <h2 style="font-size: 22px; font-weight: 900; color: #0f172a; margin-top: 2px;">
+                    Festival Alanı – Eşit Paylaşım Şöleni!
+                  </h2>
+                  <p style="font-size: 13px; font-weight: 700; color: #475569; max-width: 680px;">
+                    ${d.story}
+                  </p>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button onclick="GameApp.toggleFestivalHint()" style="padding: 8px 14px; border-radius: 12px; background: #fffbeb; color: #92400e; border: 1px solid #fde68a; font-weight: 800; font-size: 13px;">
+                  💡 ${this.festival.hintVisible ? 'İpucunu Gizle' : 'İpucu Al'}
+                </button>
+                <button onclick="GameApp.nextFestivalLevel()" style="padding: 8px 16px; border-radius: 12px; background: #9333ea; color: #fff; font-weight: 900; font-size: 13px; box-shadow: 0 2px 6px rgba(147, 51, 234, 0.3);">
+                  Yeni Festival ➔
+                </button>
+              </div>
+            </div>
+
+            <!-- Educational Hint Box -->
+            ${this.festival.hintVisible ? `
+              <div class="animate-fade-in" style="background: #fffbeb; border: 2px solid #fde68a; border-radius: 18px; padding: 14px 18px; font-size: 13px; color: #78350f; font-weight: 700; display: flex; gap: 12px; align-items: flex-start;">
+                <span style="font-size: 24px;">💡</span>
+                <div>
+                  <strong style="color: #451a03; display: block; margin-bottom: 2px;">Festival Sorumlusu İpucu:</strong>
+                  Bir sayının kalansız böleni, o sayıyı tam eşit gruplara ayırabilen sayıdır. Örneğin <strong>${d.totalA}</strong> ve <strong>${d.totalB}</strong> sayılarını düşündüğümüzde, ikisini de bölen sayıları denemelisin. 1 sayısı tüm doğal sayıları kalansız böler! Sırayla 1, 2, 3... deneyerek ortak bölen sepetini doldur!
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- WORKBENCH & VISUAL PACKAGING -->
+            <div style="background: linear-gradient(to bottom, #f3e8ff, #fce7f3, #e0e7ff); border-radius: 28px; padding: 20px; border: 3px solid #d8b4fe; box-shadow: 0 10px 25px rgba(147, 51, 234, 0.15); display: flex; flex-direction: column; gap: 16px;">
+              <!-- The Two Products Cards -->
+              <div class="grid-2">
+                <!-- Item A -->
+                <div style="background: rgba(255,255,255,0.95); padding: 14px 18px; border-radius: 18px; border: 2px solid #c7d2fe; display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 32px;">${d.iconA}</span>
+                    <div>
+                      <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: #4f46e5;">1. FESTİVAL ÜRÜNÜ</span>
+                      <h4 style="font-size: 17px; font-weight: 900; color: #1e293b;">${d.pluralA}</h4>
+                      <p style="font-size: 12px; font-weight: 700; color: #64748b;">Toplam: ${d.totalA} adet</p>
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <span style="font-size: 24px; font-weight: 900; color: #4338ca;">${d.totalA}</span>
+                    <span style="display: block; font-size: 11px; font-weight: 700; color: #94a3b8;">Adet</span>
+                  </div>
+                </div>
+
+                <!-- Item B -->
+                <div style="background: rgba(255,255,255,0.95); padding: 14px 18px; border-radius: 18px; border: 2px solid #fbcfe8; display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 32px;">${d.iconB}</span>
+                    <div>
+                      <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: #db2777;">2. FESTİVAL ÜRÜNÜ</span>
+                      <h4 style="font-size: 17px; font-weight: 900; color: #1e293b;">${d.pluralB}</h4>
+                      <p style="font-size: 12px; font-weight: 700; color: #64748b;">Toplam: ${d.totalB} adet</p>
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <span style="font-size: 24px; font-weight: 900; color: #be185d;">${d.totalB}</span>
+                    <span style="display: block; font-size: 11px; font-weight: 700; color: #94a3b8;">Adet</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PACKAGING SETTING CONTROLS -->
+              <div style="background: #ffffff; border-radius: 20px; padding: 18px; border: 2px solid #e9d5ff; display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;">
+                  <div>
+                    <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: #9333ea;">PAKETLEME AYARI</span>
+                    <h3 style="font-size: 16px; font-weight: 900; color: #1e293b;">Ürünleri Kaçar Kaçar Paketleyelim?</h3>
+                  </div>
+                  <div style="background: #f3e8ff; border: 1px solid #d8b4fe; padding: 6px 14px; border-radius: 12px;">
+                    <span style="font-size: 12px; font-weight: 800; color: #7e22ce;">Seçilen: </span>
+                    <strong style="font-size: 16px; font-weight: 900; color: #581c87;">${curDiv}'erli Paket</strong>
+                  </div>
+                </div>
+
+                <!-- Slider & Steppers -->
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <div style="flex: 1;">
+                    <input type="range" class="purple-slider" min="1" max="${maxPossible}" value="${curDiv}" oninput="GameApp.setFestivalDivisor(parseInt(this.value))">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #94a3b8; margin-top: 4px;">
+                      <span>1'erli</span>
+                      <span>${Math.round(maxPossible / 2)}'şerli</span>
+                      <span>${maxPossible}'şerli</span>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 6px;">
+                    <button onclick="GameApp.stepFestivalDivisor(-1)" style="padding: 6px 12px; border-radius: 10px; background: #f1f5f9; color: #334155; font-weight: 800; font-size: 12px;">-1</button>
+                    <button onclick="GameApp.stepFestivalDivisor(1)" style="padding: 6px 12px; border-radius: 10px; background: #f3e8ff; color: #7e22ce; font-weight: 900; font-size: 12px;">+1</button>
+                  </div>
+                </div>
+
+                <!-- Test Action -->
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding-top: 8px; border-top: 1px solid #f1f5f9;">
+                  <p style="font-size: 12px; font-weight: 700; color: #64748b;">
+                    Bu paket sayısıyla ürünleri paylaştırdığımızda artan parça kalacak mı?
+                  </p>
+                  <button onclick="GameApp.testFestivalPackaging()" style="padding: 10px 22px; border-radius: 14px; font-weight: 900; font-size: 14px; color: #fff; background: ${isCommon ? 'linear-gradient(to right, #059669, #0d9488)' : 'linear-gradient(to right, #9333ea, #6366f1)'}; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" class="${isCommon ? 'animate-pulse-soft' : ''}">
+                    🎁 Paketle ve Test Et!
+                  </button>
+                </div>
+              </div>
+
+              <!-- LIVE PHYSICAL DIVISION RESULT -->
+              <div class="grid-2">
+                <!-- Result A -->
+                <div style="background: ${isDivA ? '#f0fdf4' : '#fff1f2'}; border: 2px solid ${isDivA ? '#86efac' : '#fca5a5'}; border-radius: 18px; padding: 14px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: 900; color: #1e293b;">${d.iconA} ${d.pluralA} Dağılımı</span>
+                    <span style="font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 999px; background: ${isDivA ? '#dcfce7' : '#ffe4e6'}; color: ${isDivA ? '#166534' : '#9f1239'};">
+                      ${isDivA ? '✓ Kalansız (Tam Bölündü)' : `✕ Kalan: ${remA} adet`}
+                    </span>
+                  </div>
+                  <div style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 8px;">
+                    ${d.totalA} ÷ ${curDiv} = <strong style="color: #0f172a; font-size: 13px;">${qA} Eşit Paket</strong> ${remA > 0 ? `<span style="color: #e11d48;">ve ${remA} adet arttı</span>` : ''}
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px; max-height: 100px; overflow-y: auto; background: rgba(255,255,255,0.7); padding: 8px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.06);">
+                    ${[...Array(Math.min(qA, 16))].map((_, i) => `
+                      <span style="padding: 2px 6px; border-radius: 6px; background: #e0e7ff; color: #3730a3; font-size: 10px; font-weight: 900; border: 1px solid #c7d2fe;">📦 ${curDiv}</span>
+                    `).join('')}
+                    ${qA > 16 ? `<span style="font-size: 10px; color: #94a3b8; font-weight: 700; align-self: center;">+${qA - 16} paket daha</span>` : ''}
+                    ${remA > 0 ? `
+                      <span class="animate-wobble" style="padding: 2px 8px; border-radius: 6px; background: #fecdd3; color: #9f1239; font-size: 10px; font-weight: 900; border: 1px solid #fda4af;">⚠️ Artan: ${remA}</span>
+                    ` : ''}
+                  </div>
+                </div>
+
+                <!-- Result B -->
+                <div style="background: ${isDivB ? '#f0fdf4' : '#fff1f2'}; border: 2px solid ${isDivB ? '#86efac' : '#fca5a5'}; border-radius: 18px; padding: 14px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: 900; color: #1e293b;">${d.iconB} ${d.pluralB} Dağılımı</span>
+                    <span style="font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 999px; background: ${isDivB ? '#dcfce7' : '#ffe4e6'}; color: ${isDivB ? '#166534' : '#9f1239'};">
+                      ${isDivB ? '✓ Kalansız (Tam Bölündü)' : `✕ Kalan: ${remB} adet`}
+                    </span>
+                  </div>
+                  <div style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 8px;">
+                    ${d.totalB} ÷ ${curDiv} = <strong style="color: #0f172a; font-size: 13px;">${qB} Eşit Paket</strong> ${remB > 0 ? `<span style="color: #e11d48;">ve ${remB} adet arttı</span>` : ''}
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px; max-height: 100px; overflow-y: auto; background: rgba(255,255,255,0.7); padding: 8px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.06);">
+                    ${[...Array(Math.min(qB, 16))].map((_, i) => `
+                      <span style="padding: 2px 6px; border-radius: 6px; background: #fce7f3; color: #9d174d; font-size: 10px; font-weight: 900; border: 1px solid #fbcfe8;">📦 ${curDiv}</span>
+                    `).join('')}
+                    ${qB > 16 ? `<span style="font-size: 10px; color: #94a3b8; font-weight: 700; align-self: center;">+${qB - 16} paket daha</span>` : ''}
+                    ${remB > 0 ? `
+                      <span class="animate-wobble" style="padding: 2px 8px; border-radius: 6px; background: #fecdd3; color: #9f1239; font-size: 10px; font-weight: 900; border: 1px solid #fda4af;">⚠️ Artan: ${remB}</span>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DISCOVERED COMMON DIVISORS BASKET -->
+            <div style="background: #ffffff; border-radius: 24px; padding: 20px; border: 2px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                  <h3 style="font-size: 16px; font-weight: 900; color: #0f172a;">Keşfedilen Ortak Bölenler Sandığı</h3>
+                  <p style="font-size: 12px; font-weight: 700; color: #64748b;">Her iki ürünü de hiç artırmadan kalansız paylaştıran sayılar bu sandığa eklenir.</p>
+                </div>
+                <span style="padding: 3px 10px; border-radius: 999px; background: #dcfce7; color: #166534; font-weight: 900; font-size: 12px;">
+                  ${this.festival.discoveredDivisors.length} / ${d.commonDivs.length} Bulundu
+                </span>
+              </div>
+
+              <div style="background: #fffbeb; border: 2px solid #fde68a; border-radius: 16px; padding: 14px; min-height: 60px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+                ${this.festival.discoveredDivisors.length === 0 ? `
+                  <p style="font-size: 12px; font-weight: 700; color: #92400e; font-style: italic;">
+                    Henüz kalansız bölen bir sayı keşfetmedin. Yukarıdaki kaydırıcıyı 1, 2, 3... gibi sayılara getirip "Paketle ve Test Et"e bas!
+                  </p>
+                ` : this.festival.discoveredDivisors.map(divVal => {
+                  const isMax = divVal === d.maxDiv;
+                  return `
+                    <div style="padding: 6px 14px; border-radius: 12px; font-size: 13px; font-weight: 900; display: inline-flex; align-items: center; gap: 6px; background: ${isMax ? 'linear-gradient(to right, #facc15, #f59e0b)' : '#ffffff'}; color: #0f172a; border: ${isMax ? '2px solid #d97706' : '1px solid #cbd5e1'}; box-shadow: 0 2px 4px rgba(0,0,0,0.06);">
+                      ✓ ${divVal}'şerli
+                      ${isMax ? `<span style="font-size: 9px; padding: 2px 6px; border-radius: 4px; background: #b45309; color: #fff;">EN BÜYÜK</span>` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- FEEDBACK CARD -->
+            ${this.festival.feedback ? `
+              <div class="animate-fade-in" style="border-radius: 20px; padding: 18px 20px; font-weight: 700; font-size: 14px; border: 2px solid ${
+                this.festival.feedback.type === 'success' ? '#86efac' : this.festival.feedback.type === 'error' ? '#fca5a5' : '#d8b4fe'
+              }; background: ${
+                this.festival.feedback.type === 'success' ? '#f0fdf4' : this.festival.feedback.type === 'error' ? '#fff1f2' : '#faf5ff'
+              }; color: ${
+                this.festival.feedback.type === 'success' ? '#14532d' : this.festival.feedback.type === 'error' ? '#881337' : '#581c87'
+              }; display: flex; gap: 12px; align-items: flex-start;">
+                <span style="font-size: 24px;">${this.festival.feedback.type === 'success' ? '🎉' : this.festival.feedback.type === 'error' ? '🎪' : '💡'}</span>
+                <div style="flex: 1;">
+                  <p style="line-height: 1.5;">${this.festival.feedback.msg}</p>
+
+                  ${this.festival.stage === 'completed' ? `
+                    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #bbf7d0; font-size: 13px; color: #166534;">
+                      <strong style="display: block; margin-bottom: 4px;">🔍 Matematiksel Keşif (Festival Raporu):</strong>
+                      ${d.totalA} sayısının bölenleri: <strong>${MathUtils.getDivisors(d.totalA).join(', ')}</strong>. <br>
+                      ${d.totalB} sayısının bölenleri: <strong>${MathUtils.getDivisors(d.totalB).join(', ')}</strong>. <br>
+                      Her ikisini de kalansız bölen ortak bölenler: <strong>${d.commonDivs.join(', ')}</strong>. <br>
+                      Bu ürünleri hiç artırmadan hazırlayabileceğimiz <strong>en büyük</strong> paket boyutu ise <strong>${d.maxDiv}</strong> adettir!
+                      <div style="margin-top: 12px; display: flex; gap: 8px;">
+                        <button onclick="GameApp.nextFestivalLevel()" style="padding: 8px 16px; border-radius: 12px; background: #9333ea; color: #fff; font-weight: 900; font-size: 13px;">
+                          Yeni Festival Görevi ➔
+                        </button>
+                        <button onclick="GameApp.navigate('city_map')" style="padding: 8px 16px; border-radius: 12px; background: #ffffff; color: #334155; border: 1px solid #cbd5e1; font-weight: 800; font-size: 13px;">
+                          Şehir Haritasına Dön
+                        </button>
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      },
+
+      setFestivalDivisor(val) {
+        SoundEngine.playClick();
+        const maxPossible = Math.min(this.festival.data.totalA, this.festival.data.totalB);
+        this.festival.currentDivisor = Math.max(1, Math.min(maxPossible, val));
+        this.renderFestivalGame();
+      },
+
+      stepFestivalDivisor(delta) {
+        SoundEngine.playClick();
+        this.setFestivalDivisor(this.festival.currentDivisor + delta);
+      },
+
+      toggleFestivalHint() {
+        SoundEngine.playClick();
+        this.festival.hintVisible = !this.festival.hintVisible;
+        this.renderFestivalGame();
+      },
+
+      nextFestivalLevel() {
+        SoundEngine.playClick();
+        this.festival.level += 1;
+        this.generateFestivalScenario();
+        this.renderFestivalGame();
+      },
+
+      testFestivalPackaging() {
+        const d = this.festival.data;
+        const cur = this.festival.currentDivisor;
+        const remA = d.totalA % cur;
+        const remB = d.totalB % cur;
+        const isCommon = remA === 0 && remB === 0;
+
+        if (isCommon) {
+          SoundEngine.playSuccess();
+          if (!this.festival.discoveredDivisors.includes(cur)) {
+            this.festival.discoveredDivisors.push(cur);
+            this.festival.discoveredDivisors.sort((x, y) => x - y);
+
+            if (this.festival.discoveredDivisors.length >= d.commonDivs.length) {
+              this.festival.stage = 'completed';
+              SoundEngine.playVictory();
+              Confetti.fire(120);
+              this.awardReward(3, 160, 'master_packer', 'Festival Alanı');
+              this.festival.feedback = {
+                type: 'success',
+                msg: `MUHTEŞEM! Bu iki sayının TÜM ortak bölenlerini (${d.commonDivs.join(', ')}) eksiksiz keşfettin! En büyük ortak bölen ise ${d.maxDiv}!`
+              };
+            } else {
+              Confetti.fire(40);
+              const remaining = d.commonDivs.length - this.festival.discoveredDivisors.length;
+              this.festival.feedback = {
+                type: 'success',
+                msg: `Tebrikler! ${cur} sayısı her iki ürünü de hiç artırmadan kalansız paylaştırdı! (${d.totalA} ÷ ${cur} = ${d.totalA/cur} paket, ${d.totalB} ÷ ${cur} = ${d.totalB/cur} paket). Bulunacak ${remaining} ortak bölen daha var!`
+              };
+            }
+          } else {
+            SoundEngine.playPop();
+            this.festival.feedback = {
+              type: 'info',
+              msg: `${cur} sayısının kalansız böldüğünü zaten keşfetmiştin! Farklı bir paket sayısı dene!`
+            };
+          }
+        } else {
+          SoundEngine.playOops();
+          let reason = '';
+          if (remA > 0 && remB > 0) {
+            reason = `Her iki üründe de artan var! (${remA} ${d.pluralA} ve ${remB} ${d.pluralB} arttı). ${cur} ikisinin de böleni değil.`;
+          } else if (remA > 0) {
+            reason = `${d.pluralA} için ${remA} adet arttı (${d.totalA} sayısı ${cur}'ye tam bölünmez).`;
+          } else {
+            reason = `${d.pluralB} için ${remB} adet arttı (${d.totalB} sayısı ${cur}'ye tam bölünmez).`;
+          }
+          this.festival.feedback = {
+            type: 'error',
+            msg: `Olmadı! ${reason} Ortak bölen olabilmesi için HİÇBİR üründen artmamalıdır!`
+          };
+        }
+
+        this.renderFestivalGame();
+      },
+
+      // --- REWARD & BADGES SYSTEM ---
+      awardReward(stars, score, specificBadgeId, locationName) {
+        this.progress.totalStars += stars;
+        this.progress.totalScore += score;
+        if (locationName === 'Vapur İskelesi') {
+          this.progress.vapurCompletedCount += 1;
+        } else {
+          this.progress.festivalCompletedCount += 1;
+        }
+
+        let unlockedBadge = null;
+        if (specificBadgeId && !this.progress.unlockedBadges.includes(specificBadgeId)) {
+          this.progress.unlockedBadges.push(specificBadgeId);
+          unlockedBadge = BADGES.find(b => b.id === specificBadgeId);
+        }
+
+        // Additional badge triggers
+        if (this.progress.vapurCompletedCount >= 1 && !this.progress.unlockedBadges.includes('first_voyage')) {
+          this.progress.unlockedBadges.push('first_voyage');
+          if (!unlockedBadge) unlockedBadge = BADGES.find(b => b.id === 'first_voyage');
+        }
+        if (this.progress.festivalCompletedCount >= 1 && !this.progress.unlockedBadges.includes('first_fair')) {
+          this.progress.unlockedBadges.push('first_fair');
+          if (!unlockedBadge) unlockedBadge = BADGES.find(b => b.id === 'first_fair');
+        }
+        if (this.progress.vapurCompletedCount + this.progress.festivalCompletedCount >= 10 && !this.progress.unlockedBadges.includes('city_architect')) {
+          this.progress.unlockedBadges.push('city_architect');
+          if (!unlockedBadge) unlockedBadge = BADGES.find(b => b.id === 'city_architect');
+        }
+        if (this.progress.totalStars >= 15 && !this.progress.unlockedBadges.includes('star_collector')) {
+          this.progress.unlockedBadges.push('star_collector');
+          if (!unlockedBadge) unlockedBadge = BADGES.find(b => b.id === 'star_collector');
+        }
+
+        this.saveProgress();
+        this.openCelebration(stars, score, unlockedBadge, locationName);
+      },
+
+      // --- MODALS ---
+      openCelebration(stars, score, badge, locationName) {
+        const mc = document.getElementById('modal-container');
+        mc.innerHTML = `
+          <div class="modal-backdrop">
+            <div class="modal-card animate-scale-up" style="max-width: 440px; padding: 24px; text-align: center; border: 4px solid #fde047;">
+              <div style="width: 72px; height: 72px; border-radius: 24px; background: linear-gradient(135deg, #f59e0b, #fde047); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 38px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);" class="animate-bounce-soft">
+                🏆
+              </div>
+
+              <span style="font-size: 11px; text-transform: uppercase; font-weight: 900; color: #b45309; background: #fffbeb; padding: 3px 12px; border-radius: 999px; border: 1px solid #fde68a;">
+                GÖREV BAŞARIYLA TAMAMLANDI!
+              </span>
+              <h3 style="font-size: 24px; font-weight: 900; color: #0f172a; margin-top: 6px;">
+                Harika İş Çıkardın!
+              </h3>
+              <p style="font-size: 13px; font-weight: 700; color: #64748b; margin-top: 2px;">
+                ${locationName} görevindeki matematiksel ilişkileri başarıyla keşfettin.
+              </p>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;">
+                <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 16px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  <span style="font-size: 24px;">⭐</span>
+                  <div style="text-align: left;">
+                    <div style="font-size: 18px; font-weight: 900; color: #92400e;">+${stars}</div>
+                    <div style="font-size: 11px; font-weight: 700; color: #b45309;">Yıldız</div>
+                  </div>
+                </div>
+
+                <div style="background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 16px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  <span style="font-size: 24px;">🏆</span>
+                  <div style="text-align: left;">
+                    <div style="font-size: 18px; font-weight: 900; color: #3730a3;">+${score}</div>
+                    <div style="font-size: 11px; font-weight: 700; color: #4338ca;">Puan</div>
+                  </div>
+                </div>
+              </div>
+
+              ${badge ? `
+                <div style="background: linear-gradient(to right, #fef3c7, #fffbeb); border: 2px solid #fde68a; border-radius: 16px; padding: 12px; display: flex; align-items: center; gap: 12px; text-align: left; margin-bottom: 16px;">
+                  <span style="font-size: 32px;">${badge.icon}</span>
+                  <div>
+                    <span style="font-size: 10px; text-transform: uppercase; font-weight: 900; color: #b45309;">YENİ ROZET AÇILDI!</span>
+                    <h4 style="font-size: 14px; font-weight: 900; color: #0f172a;">${badge.title}</h4>
+                    <p style="font-size: 11px; font-weight: 700; color: #64748b;">${badge.description}</p>
+                  </div>
+                </div>
+              ` : ''}
+
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button onclick="GameApp.closeModal(); if (GameApp.currentLocation === 'vapur_iskelesi') GameApp.nextVapurLevel(); else GameApp.nextFestivalLevel();" style="width: 100%; padding: 12px; border-radius: 14px; background: linear-gradient(to right, #059669, #0d9488); color: #fff; font-weight: 900; font-size: 14px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3);">
+                  Yeni Seviyeye Devam Et ➔
+                </button>
+                <button onclick="GameApp.closeModal(); GameApp.navigate('city_map');" style="width: 100%; padding: 10px; border-radius: 14px; background: #f1f5f9; color: #334155; font-weight: 800; font-size: 13px;">
+                  Şehir Haritasına Dön
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      openBadges() {
+        SoundEngine.playClick();
+        const mc = document.getElementById('modal-container');
+        mc.innerHTML = `
+          <div class="modal-backdrop">
+            <div class="modal-card animate-scale-up" style="border: 4px solid #fde047;">
+              <!-- Header -->
+              <div style="background: linear-gradient(to right, #f59e0b, #ea580c); padding: 18px 24px; color: #fff; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 26px;">🎖️</span>
+                  <div>
+                    <span style="font-size: 10px; text-transform: uppercase; font-weight: 900; color: #fef3c7;">BAŞARILAR VE MADALYALAR</span>
+                    <h3 style="font-size: 20px; font-weight: 900;">Matematik Şehri Rozetleri</h3>
+                  </div>
+                </div>
+                <button onclick="GameApp.closeModal()" style="background: rgba(255,255,255,0.2); width: 34px; height: 34px; border-radius: 10px; color: #fff; font-size: 18px;">✕</button>
+              </div>
+
+              <!-- Body -->
+              <div style="padding: 20px; max-height: 70vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;">
+                <div style="background: #fffbeb; border: 1px solid #fde68a; padding: 10px 14px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 13px; font-weight: 800; color: #78350f;">Kazanılan Rozetler:</span>
+                  <span style="font-size: 13px; font-weight: 900; color: #b45309; background: #fde68a; padding: 3px 10px; border-radius: 999px;">
+                    ${this.progress.unlockedBadges.length} / ${BADGES.length} Rozet
+                  </span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
+                  ${BADGES.map(b => {
+                    const isUnlocked = this.progress.unlockedBadges.includes(b.id);
+                    return `
+                      <div style="padding: 14px; border-radius: 18px; border: 2px solid ${isUnlocked ? '#fde68a' : '#e2e8f0'}; background: ${isUnlocked ? '#fffbeb' : '#f8fafc'}; opacity: ${isUnlocked ? 1 : 0.6}; display: flex; gap: 12px; align-items: flex-start;">
+                        <div style="width: 44px; height: 44px; border-radius: 14px; background: ${isUnlocked ? '#fef3c7' : '#e2e8f0'}; display: flex; align-items: center; justify-content: center; font-size: 22px; shrink-0;">
+                          ${isUnlocked ? b.icon : '🔒'}
+                        </div>
+                        <div style="flex: 1;">
+                          <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 style="font-size: 14px; font-weight: 900; color: #0f172a;">${b.title}</h4>
+                            <span>${isUnlocked ? '✓' : ''}</span>
+                          </div>
+                          <p style="font-size: 12px; font-weight: 700; color: #64748b; margin-top: 2px; line-height: 1.35;">${b.description}</p>
+                          <span style="display: inline-block; margin-top: 6px; font-size: 9px; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 999px; background: #ffffff; border: 1px solid #cbd5e1; color: #475569;">
+                            ${b.category === 'vapur' ? 'Vapur İskelesi' : b.category === 'festival' ? 'Festival Alanı' : 'Şehir Başarısı'}
+                          </span>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <div style="padding: 14px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end;">
+                <button onclick="GameApp.closeModal()" style="padding: 8px 18px; border-radius: 12px; background: #1e293b; color: #fff; font-weight: 800; font-size: 13px;">
+                  Kapat
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      openGuide(tab = 'multiples') {
+        SoundEngine.playClick();
+        this.renderGuideModal(tab, 4, 6, 18, 24);
+      },
+
+      renderGuideModal(tab, sA, sB, dA, dB) {
+        const mc = document.getElementById('modal-container');
+        const multA = MathUtils.getMultiplesUpTo(sA, 60);
+        const multB = MathUtils.getMultiplesUpTo(sB, 60);
+        const cMult = MathUtils.getCommonMultiplesUpTo(sA, sB, 60);
+
+        const divsA = MathUtils.getDivisors(dA);
+        const divsB = MathUtils.getDivisors(dB);
+        const cDivs = MathUtils.getCommonDivisors(dA, dB);
+
+        mc.innerHTML = `
+          <div class="modal-backdrop">
+            <div class="modal-card animate-scale-up" style="border: 4px solid #c7d2fe;">
+              <!-- Header -->
+              <div style="background: linear-gradient(to right, #4f46e5, #0284c7); padding: 18px 24px; color: #fff; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 26px;">📖</span>
+                  <div>
+                    <span style="font-size: 10px; text-transform: uppercase; font-weight: 900; color: #bae6fd;">MEB MAT.6.1.4 KILAVUZU</span>
+                    <h3 style="font-size: 20px; font-weight: 900;">Matematik Şehri Keşif Atölyesi</h3>
+                  </div>
+                </div>
+                <button onclick="GameApp.closeModal()" style="background: rgba(255,255,255,0.2); width: 34px; height: 34px; border-radius: 10px; color: #fff; font-size: 18px;">✕</button>
+              </div>
+
+              <!-- Tabs -->
+              <div style="display: flex; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
+                <button onclick="GameApp.renderGuideModal('multiples', ${sA}, ${sB}, ${dA}, ${dB})" style="flex: 1; padding: 12px; font-size: 13px; font-weight: 900; border-bottom: 3px solid ${tab === 'multiples' ? '#0284c7' : 'transparent'}; background: ${tab === 'multiples' ? '#fff' : 'transparent'}; color: ${tab === 'multiples' ? '#0369a1' : '#64748b'};">
+                  🚢 Ortak Katlar (Vapur Seferleri)
+                </button>
+                <button onclick="GameApp.renderGuideModal('divisors', ${sA}, ${sB}, ${dA}, ${dB})" style="flex: 1; padding: 12px; font-size: 13px; font-weight: 900; border-bottom: 3px solid ${tab === 'divisors' ? '#9333ea' : 'transparent'}; background: ${tab === 'divisors' ? '#fff' : 'transparent'}; color: ${tab === 'divisors' ? '#7e22ce' : '#64748b'};">
+                  🎪 Ortak Bölenler (Festival Paketleri)
+                </button>
+              </div>
+
+              <!-- Content -->
+              <div style="padding: 20px; max-height: 65vh; overflow-y: auto;">
+                ${tab === 'multiples' ? `
+                  <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 16px; padding: 14px; font-size: 13px; color: #0c4a6e; font-weight: 700; line-height: 1.5;">
+                      <strong style="font-size: 15px; color: #0369a1; display: block; margin-bottom: 4px;">⚓ Ortak Kat Nedir? Nasıl Düşünmeliyiz?</strong>
+                      İki sayının <strong>katları</strong>, o sayıların ritmik sayılmasıyla (1 katı, 2 katı, 3 katı...) elde edilir. Her iki sayının katları listelendiğinde, <strong>her iki listede de yer alan aynı sayılara ORTAK KAT</strong> denir. Tıpkı aynı iskeleden farklı aralıklarla kalkan iki vapurun aynı anda iskeleye yanaştığı dakikalar gibi!
+                    </div>
+
+                    <!-- Sandbox -->
+                    <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                      <h4 style="font-size: 14px; font-weight: 900; color: #0f172a;">✨ Canlı Kat Deney Alanı (0 ile 60 arası):</h4>
+                      <div class="grid-2">
+                        <div>
+                          <label style="display: block; font-size: 11px; font-weight: 800; color: #0369a1; margin-bottom: 4px;">1. Vapur Sefer Aralığı (dk):</label>
+                          <input type="number" min="2" max="15" value="${sA}" onchange="GameApp.renderGuideModal('multiples', parseInt(this.value)||2, ${sB}, ${dA}, ${dB})" style="width: 100%; padding: 6px 12px; border-radius: 10px; border: 1px solid #bae6fd; font-weight: 900; font-size: 14px; background: #fff;">
+                        </div>
+                        <div>
+                          <label style="display: block; font-size: 11px; font-weight: 800; color: #9f1239; margin-bottom: 4px;">2. Vapur Sefer Aralığı (dk):</label>
+                          <input type="number" min="2" max="15" value="${sB}" onchange="GameApp.renderGuideModal('multiples', ${sA}, parseInt(this.value)||2, ${dA}, ${dB})" style="width: 100%; padding: 6px 12px; border-radius: 10px; border: 1px solid #fecdd3; font-weight: 900; font-size: 14px; background: #fff;">
+                        </div>
+                      </div>
+
+                      <div style="background: #ffffff; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; gap: 6px;">
+                        <div><span style="color: #0284c7; font-weight: 900;">${sA}'nın Katları:</span> ${multA.slice(0, 10).join(', ')}...</div>
+                        <div><span style="color: #e11d48; font-weight: 900;">${sB}'nin Katları:</span> ${multB.slice(0, 10).join(', ')}...</div>
+                        <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #f1f5f9; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                          <span style="color: #166534; font-weight: 900;">🎯 Bulunan Ortak Katlar:</span>
+                          ${cMult.length > 0 ? cMult.map(m => `
+                            <span style="padding: 2px 8px; border-radius: 6px; background: #dcfce7; color: #166534; font-weight: 900;">${m}</span>
+                          `).join('') : '<span style="color: #94a3b8;">60\'a kadar ortak kat yok</span>'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ` : `
+                  <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 16px; padding: 14px; font-size: 13px; color: #581c87; font-weight: 700; line-height: 1.5;">
+                      <strong style="font-size: 15px; color: #7e22ce; display: block; margin-bottom: 4px;">🎪 Ortak Bölen Nedir? Nasıl Düşünmeliyiz?</strong>
+                      Bir doğal sayıyı <strong>kalansız (artansız) bölebilen sayılara</strong> o sayının bölenleri denir. İki sayıyı da aynı anda <strong>kalansız bölebilen sayılara ORTAK BÖLEN</strong> denir. Tıpkı festivaldeki balonları ve şekerleri hiç artırmadan eşit hediye kutularına paylaştırmak gibi!
+                    </div>
+
+                    <!-- Sandbox -->
+                    <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                      <h4 style="font-size: 14px; font-weight: 900; color: #0f172a;">✨ Canlı Bölen Deney Alanı:</h4>
+                      <div class="grid-2">
+                        <div>
+                          <label style="display: block; font-size: 11px; font-weight: 800; color: #4338ca; margin-bottom: 4px;">1. Ürün Miktarı:</label>
+                          <input type="number" min="4" max="48" value="${dA}" onchange="GameApp.renderGuideModal('divisors', ${sA}, ${sB}, parseInt(this.value)||4, ${dB})" style="width: 100%; padding: 6px 12px; border-radius: 10px; border: 1px solid #c7d2fe; font-weight: 900; font-size: 14px; background: #fff;">
+                        </div>
+                        <div>
+                          <label style="display: block; font-size: 11px; font-weight: 800; color: #be185d; margin-bottom: 4px;">2. Ürün Miktarı:</label>
+                          <input type="number" min="4" max="48" value="${dB}" onchange="GameApp.renderGuideModal('divisors', ${sA}, ${sB}, ${dA}, parseInt(this.value)||4)" style="width: 100%; padding: 6px 12px; border-radius: 10px; border: 1px solid #fbcfe8; font-weight: 900; font-size: 14px; background: #fff;">
+                        </div>
+                      </div>
+
+                      <div style="background: #ffffff; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; gap: 6px;">
+                        <div><span style="color: #4f46e5; font-weight: 900;">${dA}'nın Bölenleri:</span> ${divsA.join(', ')}</div>
+                        <div><span style="color: #db2777; font-weight: 900;">${dB}'nin Bölenleri:</span> ${divsB.join(', ')}</div>
+                        <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #f1f5f9; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                          <span style="color: #7e22ce; font-weight: 900;">🎁 Kalansız Ortak Bölenler:</span>
+                          ${cDivs.map(d => `
+                            <span style="padding: 2px 8px; border-radius: 6px; background: #f3e8ff; color: #6b21a8; font-weight: 900;">${d}</span>
+                          `).join('')}
+                          <span style="font-size: 11px; color: #b45309; font-weight: 800; margin-left: 4px;">(En büyük ortak bölen: ${Math.max(...cDivs)})</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `}
+              </div>
+
+              <!-- Footer -->
+              <div style="padding: 14px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end;">
+                <button onclick="GameApp.closeModal()" style="padding: 8px 18px; border-radius: 12px; background: #4f46e5; color: #fff; font-weight: 800; font-size: 13px;">
+                  Anladım, Oyuna Dön ➔
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      closeModal() {
+        SoundEngine.playClick();
+        document.getElementById('modal-container').innerHTML = '';
+      }
+    };
+
+    // Initialize game when page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      GameApp.init();
+    });
+  </script>
+</body>
+</html>
